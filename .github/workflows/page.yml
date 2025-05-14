@@ -1,0 +1,35 @@
+name: update releases
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  build_page:
+    runs-on: ubuntu-latest
+    permissions:
+      content: write
+    steps:
+      - runs: |
+          pip install pygithub
+        shell: bash
+      - name: gen releases page
+        env:
+          TOKEN: ${{ github.token }}
+        runs: |
+          python ./gen_releases.py
+        shell: bash
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: index.html
+          message: update releases listing
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+      - name: push last release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        runs: |
+          gh auth setup-git
+          git push main
+        shell: bash
