@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from github import Github
 from github import Auth
 import os

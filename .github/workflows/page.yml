@@ -9,16 +9,23 @@ jobs:
   build_page:
     runs-on: ubuntu-latest
     permissions:
-      content: write
+      contents: write
     steps:
-      - runs: |
+      - run: |
           pip install pygithub
+          sudo apt-get -y install pandoc
         shell: bash
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          set-safe-directory: true
       - name: gen releases page
         env:
           TOKEN: ${{ github.token }}
-        runs: |
-          python ./gen_releases.py
+        run: |
+          ./gen_releases.py
+          pandoc --from=markdown -t html index.rst -o index.html
         shell: bash
       - uses: EndBug/add-and-commit@v9
         with:
@@ -29,7 +36,7 @@ jobs:
       - name: push last release
         env:
           GH_TOKEN: ${{ github.token }}
-        runs: |
+        run: |
           gh auth setup-git
-          git push main
+          git push origin main
         shell: bash
