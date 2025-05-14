@@ -25,11 +25,10 @@ jobs:
           TOKEN: ${{ github.token }}
         run: |
           ./gen_releases.py
-          pandoc --from=markdown -t html index.rst -o index.html
         shell: bash
       - uses: EndBug/add-and-commit@v9
         with:
-          add: index.html
+          add: index.md
           message: update releases listing
           committer_name: GitHub Actions
           committer_email: actions@github.com

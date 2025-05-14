@@ -23,7 +23,7 @@ This table list all the existing SDK releases that can be downloaded.
 
 """
 
-with open('index.rst', 'w') as indexfile:
+with open('index.md', 'w') as indexfile:
     indexfile.write(index_title)
     for release in releases:
         indexfile.write("### Camelot SDK release " + release.title + "\n\n")
