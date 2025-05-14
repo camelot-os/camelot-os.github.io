@@ -29,7 +29,7 @@ with open('index.md', 'w') as indexfile:
         indexfile.write("### Camelot SDK release " + release.title + "\n\n")
         assets = release.get_assets()
         for asset in assets:
-            indexfile.write("  * [" + asset.name + "](" + asset.url + ")\n")
+            indexfile.write("  * [" + asset.name + "](" + asset.browser_download_url + ")\n")
         indexfile.write("\n")
 
 # To close connections after use
