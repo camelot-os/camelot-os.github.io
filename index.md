@@ -16,6 +16,6 @@ This table list all the existing SDK releases that can be downloaded.
 
 ### Camelot SDK release nightly
 
-  * [camelot-sdk-armv7em_nightly-1-g617fe35.tar.xz](https://github.com/camelot-os/camelot-sdk/releases/download/nightly/camelot-sdk-armv7em_nightly-1-g617fe35.tar.xz)
-  * [camelot-sdk-armv8m-mainline_nightly-1-g617fe35.tar.xz](https://github.com/camelot-os/camelot-sdk/releases/download/nightly/camelot-sdk-armv8m-mainline_nightly-1-g617fe35.tar.xz)
+  * [camelot-sdk-armv7em_nightly.tar.xz](https://github.com/camelot-os/camelot-sdk/releases/download/nightly/camelot-sdk-armv7em_nightly.tar.xz)
+  * [camelot-sdk-armv8m-mainline_nightly.tar.xz](https://github.com/camelot-os/camelot-sdk/releases/download/nightly/camelot-sdk-armv8m-mainline_nightly.tar.xz)
 
