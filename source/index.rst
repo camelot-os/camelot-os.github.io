@@ -27,7 +27,7 @@ documentation for details.
 
    Troubleshootings <troobleshootings>
 
-   Developping components for Camlot <over_camelot/index>
+   Developping components for Camelot <over_camelot/index>
 
    Porting Camelot <ports/index>
       Adding a new architecture <ports/arches>

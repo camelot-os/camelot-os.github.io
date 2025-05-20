@@ -1,5 +1,5 @@
-Porting Camlot
---------------
+Porting Camelot
+---------------
 
 .. toctree::
    :maxdepth: 2
