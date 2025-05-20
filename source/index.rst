@@ -1,3 +1,6 @@
+.. SPDX-FileCopyrightText: 2025 H2Lab OSS Team
+.. SPDX-License-Identifier: Apache-2.0
+
 .. The Camelot Book documentation master file, created by
    sphinx-quickstart on Tue May 20 10:40:48 2025.
    You can adapt this file completely to your liking, but it should at least
