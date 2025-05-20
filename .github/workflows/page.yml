@@ -15,8 +15,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - run: |
-          pip install pygithub
-          sudo apt-get -y install meson sphinx-rtd-theme python3-sphinx ninja-build
+          pip install pygithub sphinx-rtd-theme
+          sudo apt-get -y install meson python3-sphinx ninja-build
         shell: bash
       - uses: actions/checkout@v4
         with:
