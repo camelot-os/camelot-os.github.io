@@ -15,7 +15,7 @@
 # limitations under the License.
 
 project('camelot-book',
-    meson_version: '>=1.7.0',
+    meson_version: '>=1.3.0',
     version : run_command('support/meson/version.sh', 'get-vcs', check: true).stdout().strip(),
     license: 'Apache-2.0',
     license_files: [ 'LICENSE' ],
