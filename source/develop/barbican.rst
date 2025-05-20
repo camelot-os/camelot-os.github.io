@@ -1,2 +1,2 @@
-Barbican: the Camlot toolkit
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Barbican: the Camelot toolkit
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
