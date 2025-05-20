@@ -28,20 +28,52 @@ py3 = pymod.find_installation(
     'python3',
     modules: [
         'exhale',
-        'sphinx_rtd_theme',
+        'sphinx_pdj_theme',
         'sphinx_simplepdf',
     ]
     )
 
 gen_release = find_program('support/tools/gen_releases.py')
 
+release_file_path = join_paths(meson.current_source_dir(), 'source/') + 'releases.rst'
+
 release_file = configure_file(
-    output: 'releases.rst',
-    command: [gen_release ],
+    output: 'releases.dep',
+    command: [gen_release, release_file_path ],
 )
 
 camelot_book_src = files(
     'source/index.rst',
+    'source/over_camelot/index.rst',
+    'source/over_camelot/gui.rst',
+    'source/over_camelot/testing.rst',
+    'source/over_camelot/debug.rst',
+    'source/over_camelot/libs.rst',
+    'source/over_camelot/drivers.rst',
+    'source/over_camelot/apps.rst',
+    'source/indus/index.rst',
+    'source/indus/licensing.rst',
+    'source/indus/offline.rst',
+    'source/hw_support.rst',
+    'source/ports/index.rst',
+    'source/ports/global_process.rst',
+    'source/ports/arches.rst',
+    'source/develop/index.rst',
+    'source/develop/languages.rst',
+    'source/develop/projects.rst',
+    'source/develop/blinky.rst',
+    'source/develop/toolchains.rst',
+    'source/develop/sdk.rst',
+    'source/develop/merlin.rst',
+    'source/develop/barbican.rst',
+    'source/contribute.rst',
+    'source/behind/index.rst',
+    'source/behind/kernel.rst',
+    'source/behind/concepts.rst',
+    'source/behind/security.rst',
+    'source/behind/formal.rst',
+    'source/Introduction.rst',
+    'source/troobleshootings.rst',
 )
 
 camelot_book = custom_target('camelot_book',
@@ -53,7 +85,7 @@ camelot_book = custom_target('camelot_book',
     install_dir: get_option('datadir') / 'doc/camelot-book',
     command: [sphinx, '-b', 'html', '-q', '-d',
         'build/doctrees',
-        '-Dversion=' + meson.project_version(),
+        '-Drelease=' + meson.project_version(),
         join_paths(meson.current_source_dir(), 'source'),
         'doc/camelot-book',
     ])
