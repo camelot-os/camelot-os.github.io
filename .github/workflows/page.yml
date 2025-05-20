@@ -31,7 +31,7 @@ jobs:
           fetch-tags: true
           set-safe-directory: true
 
-      - name: build sphine doc
+      - name: build sphinx doc
         env:
           TOKEN: ${{ github.token }}
         run: |

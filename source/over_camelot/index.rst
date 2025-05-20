@@ -1,5 +1,5 @@
-Developping components for Camlot
----------------------------------
+Developping components for Camelot
+----------------------------------
 
 .. toctree::
    :maxdepth: 2
