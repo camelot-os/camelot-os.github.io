@@ -27,9 +27,9 @@ sphinx = find_program('sphinx-build')
 py3 = pymod.find_installation(
     'python3',
     modules: [
-        'exhale',
         'sphinx_pdj_theme',
-        'sphinx_simplepdf',
+        'rstcloth',
+        'github',
     ]
     )
 

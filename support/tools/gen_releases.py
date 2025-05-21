@@ -6,14 +6,16 @@
 from github import Github
 from github import Auth
 import sys, os
+from rstcloth import RstCloth
 from datetime import datetime
+import re
 
 env_var = os.environ
 # using an access token. This allows CI-based build using ephemeral GITHUB_TOKEN
 auth = Auth.Token(env_var['TOKEN'])
 
 if len(sys.argv) < 2:
-    print('Usage: ' + sys.argv[0] + 'path/to/target.rst')
+    print('Usage: ' + str(sys.argv[0]) + ' path/to/target.rst')
     sys.exit()
 
 # XXX: fix to proper path checking
@@ -26,22 +28,44 @@ g = Github(auth=auth)
 repo = g.get_repo('camelot-os/camelot-sdk')
 releases = repo.get_releases()
 
-index_title = """
-Camelot SDK releases
---------------------
-
-This table list all the existing SDK releases that can be downloaded.
-
-"""
-
 with open(target, 'w') as indexfile:
-    indexfile.write(index_title)
+    doc = RstCloth(indexfile)
+    doc.h2('Camelot SDK upstream releases')
+    doc.newline()
+    doc.table_of_contents()
+    doc.newline()
+    doc.fill('These Camelot SDK releases are community supported pre-built SDK for community supported hardware architectures.')
+    doc.newline()
+    doc.note(arg='This releases are tested against various SoCs listed in the release description')
+    doc.newline()
+
+
     for release in releases:
-        indexfile.write("### Camelot SDK release " + release.title + "\n\n")
+
+        doc.h3("Camelot SDK release " + release.tag_name)
+        doc.newline()
+        if release.prerelease:
+            doc.warning(arg='This is a pre-release')
+            doc.newline()
         assets = release.get_assets()
+        doc.newline()
+        doc.codeblock(content=str(release.body), language='markdown')
+        doc.newline()
         for asset in assets:
-            indexfile.write("  * [" + asset.name + "](" + asset.browser_download_url + ")\n")
-        indexfile.write("\n")
+            doc.table_list(
+                headers=['', doc.inline_link(asset.name, asset.browser_download_url)],
+
+                data=[
+                    ['size', str(asset.size / (1000)) + 'KB'],
+                    ['architecture', asset.name.split('_')[0].split('-')[-1] ],
+                ],
+                widths=['30', '65'],
+                width='100%'
+            )
+            #doc.li(doc.inline_link(asset.name, asset.browser_download_url))
+            #indexfile.write("  * `" + asset.name + " <" + asset.browser_download_url + ">`_\n")
+            doc.newline()
+        doc.newline()
 
 # To close connections after use
 g.close()
