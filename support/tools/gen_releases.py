@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# SPDX-FileCopyrightText: 2025 H2Lab OSS Team
+# SPDX-License-Identifier: Apache-2.0
+
 from github import Github
 from github import Auth
 import sys, os
