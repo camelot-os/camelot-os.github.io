@@ -57,7 +57,7 @@ with open(target, 'w') as indexfile:
 
                 data=[
                     ['size', str(asset.size / (1000)) + 'KB'],
-                    ['architecture', asset.name.split('_')[0].split('-')[-1] ],
+                    ['architecture', asset.name.split('_')[0][12:] ],
                 ],
                 widths=['30', '65'],
                 width='100%'
