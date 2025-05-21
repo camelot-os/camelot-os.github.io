@@ -62,8 +62,6 @@ with open(target, 'w') as indexfile:
                 widths=['30', '65'],
                 width='100%'
             )
-            #doc.li(doc.inline_link(asset.name, asset.browser_download_url))
-            #indexfile.write("  * `" + asset.name + " <" + asset.browser_download_url + ">`_\n")
             doc.newline()
         doc.newline()
 
