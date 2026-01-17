@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
     <title>Camelot Operating System</title>
-    <link href="https://camelot-os.github.io/feed.xml" rel="self" />
-    <link href="https://camelot-os.github.io" />
+    <link href="https://camelot-os.h2lab.org/feed.xml" rel="self" />
+    <link href="https://camelot-os.h2lab.org" />
     <updated>2026-01-17T14:29:56+01:00</updated>
     <author>
         <name>H2Lab Development Team</name>
     </author>
-    <id>https://camelot-os.github.io</id>
+    <id>https://camelot-os.h2lab.org</id>
 
     <entry>
         <title>Exploring Pointer-Free Data Exchange in Sentry</title>
         <author>
             <name>H2Lab Development Team</name>
         </author>
-        <link href="https://camelot-os.github.io/exploring-pointer-free-data-exchange-in-sentry.html"/>
-        <id>https://camelot-os.github.io/exploring-pointer-free-data-exchange-in-sentry.html</id>
+        <link href="https://camelot-os.h2lab.org/exploring-pointer-free-data-exchange-in-sentry.html"/>
+        <id>https://camelot-os.h2lab.org/exploring-pointer-free-data-exchange-in-sentry.html</id>
 
         <updated>2026-01-17T12:17:06+01:00</updated>
             <summary type="html">
@@ -36,8 +36,8 @@
         <author>
             <name>H2Lab Development Team</name>
         </author>
-        <link href="https://camelot-os.github.io/formal-proof-in-embedded-systems-part-3.html"/>
-        <id>https://camelot-os.github.io/formal-proof-in-embedded-systems-part-3.html</id>
+        <link href="https://camelot-os.h2lab.org/formal-proof-in-embedded-systems-part-3.html"/>
+        <id>https://camelot-os.h2lab.org/formal-proof-in-embedded-systems-part-3.html</id>
 
         <updated>2026-01-17T12:16:02+01:00</updated>
             <summary type="html">
@@ -57,8 +57,8 @@
         <author>
             <name>H2Lab Development Team</name>
         </author>
-        <link href="https://camelot-os.github.io/sentry-kernel-key-concepts-part-1-basics.html"/>
-        <id>https://camelot-os.github.io/sentry-kernel-key-concepts-part-1-basics.html</id>
+        <link href="https://camelot-os.h2lab.org/sentry-kernel-key-concepts-part-1-basics.html"/>
+        <id>https://camelot-os.h2lab.org/sentry-kernel-key-concepts-part-1-basics.html</id>
 
         <updated>2026-01-17T12:15:34+01:00</updated>
             <summary type="html">
@@ -80,8 +80,8 @@
         <author>
             <name>H2Lab Development Team</name>
         </author>
-        <link href="https://camelot-os.github.io/formal-proof-in-embedded-systems-part-2.html"/>
-        <id>https://camelot-os.github.io/formal-proof-in-embedded-systems-part-2.html</id>
+        <link href="https://camelot-os.h2lab.org/formal-proof-in-embedded-systems-part-2.html"/>
+        <id>https://camelot-os.h2lab.org/formal-proof-in-embedded-systems-part-2.html</id>
 
         <updated>2026-01-17T12:15:10+01:00</updated>
             <summary type="html">
@@ -101,8 +101,8 @@
         <author>
             <name>H2Lab Development Team</name>
         </author>
-        <link href="https://camelot-os.github.io/formal-proof-in-embedded-systems-part-1.html"/>
-        <id>https://camelot-os.github.io/formal-proof-in-embedded-systems-part-1.html</id>
+        <link href="https://camelot-os.h2lab.org/formal-proof-in-embedded-systems-part-1.html"/>
+        <id>https://camelot-os.h2lab.org/formal-proof-in-embedded-systems-part-1.html</id>
 
         <updated>2026-01-17T12:14:37+01:00</updated>
             <summary type="html">
@@ -122,8 +122,8 @@
         <author>
             <name>H2Lab Development Team</name>
         </author>
-        <link href="https://camelot-os.github.io/introducing-camelot-os.html"/>
-        <id>https://camelot-os.github.io/introducing-camelot-os.html</id>
+        <link href="https://camelot-os.h2lab.org/introducing-camelot-os.html"/>
+        <id>https://camelot-os.h2lab.org/introducing-camelot-os.html</id>
 
         <updated>2026-01-17T11:29:51+01:00</updated>
             <summary type="html">
