@@ -3,7 +3,7 @@
     <title>Camelot Operating System</title>
     <link href="https://camelot-os.h2lab.org/feed.xml" rel="self" />
     <link href="https://camelot-os.h2lab.org" />
-    <updated>2026-01-30T18:45:04+01:00</updated>
+    <updated>2026-01-30T19:13:57+01:00</updated>
     <author>
         <name>H2Lab Development Team</name>
     </author>
@@ -98,6 +98,52 @@
 </ul>
 </li>
 </ol>
+<p>This part of the demonstration is made using assertion in the <code>mpu_forge_ressource()</code>, which is the arch-specific implementation of the MPU region set on armv8-m.<br>This function is verified using assertions in its implementation:</p>
+<pre class="language-c"><code>/*@
+  requires \valid_read(desc);
+  requires \valid(resource);
+  assigns *resource;
+  ensures (\result == K_STATUS_OKAY);
+ */
+__STATIC_FORCEINLINE kstatus_t mpu_forge_resource(const struct mpu_region_desc *desc,
+                                                   layout_resource_t *resource)
+{
+    kstatus_t status = K_ERROR_INVPARAM;
+
+    /* W^X conformity */
+    /*@
+      assert desc-&gt;noexec == 0 ==&gt;
+        (desc-&gt;access_perm == MPU_REGION_PERM_RO || desc-&gt;access_perm == MPU_REGION_PERM_PRIV_RO);
+     */
+    /*@
+      assert (desc-&gt;access_perm != MPU_REGION_PERM_RO &amp;&amp; desc-&gt;access_perm != MPU_REGION_PERM_PRIV_RO) ==&gt;
+        desc-&gt;noexec == 1;
+    */
+    resource-&gt;RBAR = ARM_MPU_RBAR_AP(
+        desc-&gt;addr,
+        desc-&gt;shareable ? ARM_MPU_SH_INNER : ARM_MPU_SH_NON,
+        desc-&gt;access_perm,
+        desc-&gt;noexec ? 1UL : 0UL
+    );
+
+    resource-&gt;RLAR = ARM_MPU_RLAR(desc-&gt;addr + desc-&gt;size - 1, desc-&gt;access_attrs);
+
+    status = K_STATUS_OKAY;
+    /*@ assert (status == K_STATUS_OKAY); */
+    return status;
+}</code></pre>
+<p>This function is called just before the <code>mpu_add_ressource()</code> function, that add the previously forged ressource into tasks memory map table.</p>
+<p>The coverage of this function is made using two Frama-C covering tests:</p>
+<ul>
+<li>syscall coverage analysis, that cover this call through the various memory-map related syscalls implementation</li>
+<li>kernel startup coverage, that cover the initialisation-related mapping, at task context initialisation.</li>
+</ul>
+<p>W-Xor-X demonstration at region forge time is not enough to demonstrate the entire properties. This also requires that:</p>
+<ul>
+<li>no overlap exist between mapped region at any time of the task mapping</li>
+<li>no invalid region is added to a task memory map table</li>
+</ul>
+<p>This is added through other dedicated predicates and assertion, as described bellow.</p>
 <h3 data-start="4964" data-end="4998">Region-related predicates</h3>
 <p data-start="5000" data-end="5098">A set of predicates has been written to verify region properties, including PMSAv8 conformity and overlapping check to already mapped regions.</p>
 <div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"> </div>
