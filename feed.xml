@@ -3,12 +3,274 @@
     <title>Camelot Operating System</title>
     <link href="https://camelot-os.h2lab.org/feed.xml" rel="self" />
     <link href="https://camelot-os.h2lab.org" />
-    <updated>2026-01-17T16:14:11+01:00</updated>
+    <updated>2026-01-30T18:45:04+01:00</updated>
     <author>
         <name>H2Lab Development Team</name>
     </author>
     <id>https://camelot-os.h2lab.org</id>
 
+    <entry>
+        <title>Why Formal Verification Matters in the Sentry Microkernel</title>
+        <author>
+            <name>H2Lab Development Team</name>
+        </author>
+        <link href="https://camelot-os.h2lab.org/why-formal-verification-matters-in-the-sentry-microkernel/"/>
+        <id>https://camelot-os.h2lab.org/why-formal-verification-matters-in-the-sentry-microkernel/</id>
+
+        <updated>2026-01-18T08:58:13+01:00</updated>
+            <summary type="html">
+                <![CDATA[
+                    Micro-kernels such as Sentry aim to provide strong isolation, minimal trusted computing bases, and high assurance for embedded and security-critical systems. However, achieving these goals in practice is difficult: subtle bugs in low-level code, memory protection, or context switching can completely undermine the intended security&hellip;
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                <p data-start="335" data-end="677">Micro-kernels such as <strong data-start="356" data-end="366">Sentry</strong> aim to provide strong isolation, minimal trusted computing bases, and high assurance for embedded and security-critical systems. However, achieving these goals in practice is difficult: subtle bugs in low-level code, memory protection, or context switching can completely undermine the intended security model.</p>
+<p data-start="679" data-end="984">This is where <strong data-start="693" data-end="716">formal verification</strong> becomes a decisive advantage. In Sentry, formal methods are not an afterthought or an academic exercise—they directly shape the kernel’s architecture and implementation, particularly in security-critical subsystems such as <strong data-start="940" data-end="983">MPU (Memory Protection Unit) management</strong>.</p>
+<h2 data-start="991" data-end="1039">What Does Formal Verification Mean in Sentry?</h2>
+<p data-start="1041" data-end="1411">Formal verification consists in specifying the intended behavior of the kernel precisely and <strong data-start="1134" data-end="1160">mathematically proving</strong> that the implementation satisfies those specifications. In Sentry, this approach is applied using static analysis and formally-grounded tools (like <strong data-start="1309" data-end="1320">Frama-C</strong>), letting us establish strong guarantees about memory safety, isolation, and control flow.</p>
+<p data-start="1413" data-end="1606">Unlike testing, which can only demonstrate the presence of bugs in specific test cases, formal verification can prove the <strong data-start="1535" data-end="1574">absence of entire classes of errors</strong> across all possible executions.</p>
+<h2 data-start="1613" data-end="1643">Security by Construction</h2>
+<p data-start="1645" data-end="1835">The kernel is the most privileged component of any system. A single flaw can compromise all applications running on top of it. Formal verification helps Sentry address this risk at its root:</p>
+<ul data-start="1837" data-end="2124">
+<li data-start="1837" data-end="1897">
+<p data-start="1839" data-end="1897">It proves that critical invariants hold in all executions.</p>
+</li>
+<li data-start="1898" data-end="2027">
+<p data-start="1900" data-end="2027">It eliminates classes of bugs such as invalid memory accesses, inconsistent state transitions, or broken isolation assumptions.</p>
+</li>
+<li data-start="2028" data-end="2124">
+<p data-start="2030" data-end="2124">It provides <em data-start="2042" data-end="2066">mathematical assurance</em> that the verified properties hold for all possible paths.</p>
+</li>
+</ul>
+<p data-start="2126" data-end="2286">This level of assurance is particularly relevant for embedded and cyber-physical systems, where failures can have safety, financial, or regulatory consequences.</p>
+<h2 data-start="2293" data-end="2334">A Kernel Designed for Verifiability</h2>
+<p data-start="2336" data-end="2392">Formal verification strongly influences Sentry’s design:</p>
+<ul data-start="2394" data-end="2646">
+<li data-start="2394" data-end="2461">
+<p data-start="2396" data-end="2461"><strong data-start="2396" data-end="2424">Highly modular structure</strong>, enabling component-level reasoning.</p>
+</li>
+<li data-start="2462" data-end="2544">
+<p data-start="2464" data-end="2544"><strong data-start="2464" data-end="2497">Clear and explicit interfaces</strong>, which can be formally specified and verified.</p>
+</li>
+<li data-start="2545" data-end="2646">
+<p data-start="2547" data-end="2646"><strong data-start="2547" data-end="2589">Minimal and encapsulated assembly code</strong>, reducing the unverified surface and simplifying proofs.</p>
+</li>
+</ul>
+<p data-start="2648" data-end="2822">In Sentry, the kernel is not merely verified after implementation; it is <strong data-start="2721" data-end="2750">designed to be verifiable</strong>, which significantly lowers the cost and complexity of formal analysis.</p>
+<h2 data-start="2829" data-end="2889">MPU Management: A Concrete Case of Formal Verification</h2>
+<p data-start="2891" data-end="3001">One of the most compelling applications of formal verification in Sentry is the <strong data-start="2971" data-end="3000">management of MPU regions</strong>.</p>
+<p data-start="3003" data-end="3271">On ARM Cortex-M microcontrollers, the MPU is the primary hardware mechanism used to enforce memory isolation between tasks. Any mistake in MPU configuration can lead to severe vulnerabilities: unintended memory access, privilege escalation, or cross-task interference.</p>
+<p data-start="3273" data-end="3348">Sentry treats MPU management as a first-class, formally reasoned subsystem.</p>
+<h2 data-start="4649" data-end="4701">Example ACSL Specifications for MPU Invariants</h2>
+<p data-start="4703" data-end="4962">Below are example fragments in the style of <strong data-start="4747" data-end="4791">ACSL (ANSI/ISO C Specification Language)</strong> that express core invariants used in Sentry’s MPU management logic. These are <em data-start="4870" data-end="4884">illustrative</em>, reflecting how formal annotations in <code data-start="4923" data-end="4938">mpu_pmsa_v8.h</code> specify key guarantees.</p>
+<h3 data-start="4703" data-end="4962">About MPU mapping and W^X</h3>
+<p data-start="708" data-end="798">On ARMv8-M the PMSAv8 MPU region validity predicate (in ACSL) says a region is <em data-start="787" data-end="794">valid</em> if:</p>
+<ul data-start="800" data-end="984">
+<li data-start="800" data-end="876">
+<p data-start="802" data-end="876">both base and limit are aligned to the MPU region alignment (<code data-start="863" data-end="873">32 bytes</code>)</p>
+</li>
+<li data-start="877" data-end="900">
+<p data-start="879" data-end="900">the limit is ≥ base</p>
+</li>
+<li data-start="901" data-end="984">
+<p data-start="903" data-end="984">OR if the region is empty (RBAR/RLAR = 0)</p>
+</li>
+</ul>
+<p data-start="986" data-end="1062">That last point makes “unmapped” regions represent no actual memory mapping.</p>
+<p data-start="1064" data-end="1140">The architecture imposes <em data-start="1089" data-end="1108">Write-xor-Execute</em> semantics via these properties:</p>
+<ol data-start="1142" data-end="1665">
+<li data-start="1142" data-end="1238">
+<p data-start="1145" data-end="1238"><strong data-start="1145" data-end="1202">Executable permissions are encoded in the RBAR XN bit</strong> — <code data-start="1205" data-end="1218">noexec == 1</code> → non-executable.</p>
+</li>
+<li data-start="1239" data-end="1306">
+<p data-start="1242" data-end="1306"><strong data-start="1242" data-end="1303">Access permission (AP) bits define read/write constraints</strong>.</p>
+</li>
+<li data-start="1307" data-end="1665">
+<p data-start="1310" data-end="1442">The Cortex-M PMSAv8 (as profiled in the kernel header) includes <strong data-start="1374" data-end="1388">assertions</strong> that enforce W^X semantics when forging a resource:</p>
+<ul data-start="1446" data-end="1665">
+<li data-start="1446" data-end="1546">
+<p data-start="1448" data-end="1546">if <code data-start="1451" data-end="1464">noexec == 0</code> (i.e., region is executable), then the access permission must be RO (read-only)</p>
+</li>
+<li data-start="1550" data-end="1665">
+<p data-start="1552" data-end="1665">conversely, if the region is writable (non-RO), then <code data-start="1605" data-end="1613">noexec</code> must be set</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 data-start="4964" data-end="4998">Region-related predicates</h3>
+<p data-start="5000" data-end="5098">A set of predicates has been written to verify region properties, including PMSAv8 conformity and overlapping check to already mapped regions.</p>
+<div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"> </div>
+<div class="absolute end-0 bottom-0 flex h-9 items-center pe-2">
+<div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs">
+<pre class="language-c"><code>/*@
+
+  predicate aligned_32(ℤ addr) =
+    (addr &amp; MPU_REGION_ALIGN_MASK) == 0;
+
+    predicate mpu_is_empty_region(ARM_MPU_Region_t r1) =
+      r1.RBAR == 0 &amp;&amp; r1.RLAR == 0;
+
+  predicate valid_mpu_region(ℤ base, ℤ limit) =
+    ((base == 0 &amp;&amp; limit == 0) ||
+    (
+        aligned_32(base)
+        &amp;&amp; aligned_32(limit)
+        &amp;&amp; limit &gt;= base
+        &amp;&amp; ((limit - base + 1) % MPU_REGION_ALIGN == 0)
+    ));
+
+  predicate valid_mpu_regions{L}(ARM_MPU_Region_t *regions, integer n) =
+        \forall integer i;
+            0 &lt;= i &lt; n ==&gt;
+            valid_mpu_region(regions[i].RBAR &amp; MPU_RBAR_BASE_Msk,
+                             regions[i].RLAR &amp; MPU_RLAR_LIMIT_Msk);
+
+  predicate non_empty_region(ℤ base, ℤ limit) =
+    (limit - base + 1) &gt;= MPU_REGION_ALIGN;
+
+  // when either region is empty, they are considered disjoint
+  predicate disjoint(ARM_MPU_Region_t r1, ARM_MPU_Region_t r2) =
+      r1.RBAR == 0 &amp;&amp; r1.RLAR == 0 ||
+      r2.RBAR == 0 &amp;&amp; r2.RLAR == 0 ||
+      (
+        (r1.RBAR &amp; MPU_RBAR_BASE_Msk) &lt;= (r2.RLAR &amp; MPU_RLAR_LIMIT_Msk) ||
+        (r2.RBAR &amp; MPU_RBAR_BASE_Msk) &lt;= (r1.RLAR &amp; MPU_RLAR_LIMIT_Msk)
+      );
+
+  predicate regions_disjoint{L}(ARM_MPU_Region_t *regions, integer n) =
+      \forall integer i, j;
+        0 &lt;= i &lt; n &amp;&amp; 0 &lt;= j &lt; n &amp;&amp; i != j ==&gt;
+          disjoint(regions[i], regions[j]);
+*/
+</code></pre>
+</div>
+</div>
+<p data-start="5473" data-end="5500">These predicates then need to be added as pre and postconditions of programs that are responsible for manpulatin task memory regions.<br>This is done using a single primitive in the kernel, that add a new region to a given task region set. This primitive is denoted <span style="font-size: inherit;"><code>mgr_task_add_resource()</code>.</span></p>
+<h3 data-start="5565" data-end="5593">Region validity check</h3>
+<pre class="language-c"><code>kstatus_t status;
+task_t *cell;
+
+// [...]
+if (unlikely(mpu_region_is_valid(&amp;resource) == SECURE_FALSE)) {
+        status = K_ERROR_INVPARAM;
+        goto err;
+}
+/* demonstrate that the effective run time check does match the predicate */
+/*@ assert valid_mpu_regions(&amp;resource, 1); */</code></pre>
+<h3 data-start="5565" data-end="5593">Non-Overlapping check</h3>
+<p data-start="5595" data-end="5643">In this function, the overlapping check is made using disjoint assertion between all the existing regions of the task and the new one that aim to be added:</p>
+<pre class="language-c"><code>/*@ ghost int is_disjoint = 0; */
+/*@
+      loop invariant 0 &lt;= idx &lt;= TASK_MAX_RESSOURCES_NUM;
+      loop invariant \initialized(&amp;cell-&gt;layout[idx]);
+      loop assigns idx;
+      loop variant TASK_MAX_RESSOURCES_NUM - idx;
+ */
+for (uint8_t idx = 0; idx &lt; TASK_MAX_RESSOURCES_NUM; ++idx) {
+    if (unlikely(mpu_regions_overlap(cell-&gt;layout[idx], resource) == SECURE_TRUE)) {
+        status = K_ERROR_INVPARAM;
+        /*@ ghost is_disjoint = 1; */
+        goto err;
+    }
+    /*@ assert disjoint(cell-&gt;layout[idx], resource); */
+}</code></pre>
+<h3 data-start="6104" data-end="6133">Context Switch</h3>
+<p data-start="6135" data-end="6209">At context switch, the above updated table is the lonely one used in order to map the newly scheduled task, meaning that this table is the single source of memoyr mapping configuration. This is why the lonely table writter is stricty verified.</p>
+<div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"> </div>
+<h2 data-start="1872" data-end="1904">How Frama-C coverage is used</h2>
+<p data-start="1906" data-end="1949">Frama-C is called using both EVA and WP plugins through the following entrypoint:</p>
+<div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"> </div>
+<div class="absolute end-0 bottom-0 flex h-9 items-center pe-2">
+<div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs">
+<pre class="language-c"><code>int map_resource(void)
+{
+    /*
+     * here we define unpredictable resource ID and layout,
+     * to cover any possible resource structure input values, so
+     * that we can demonstrate that only valid (aligned, non-overlapping)
+     * resources are mapped.
+     * NOTE: this do not check the resource ownership, as this is done by
+     * the task manager itself.
+     */
+    volatile uint8_t resource_id = 0;
+    volatile layout_resource_t resource;
+    /*
+     * call kernel startup up to task manager initialisation. This part noRTE has already
+     * been demonstrated in another Frama-C test that targets kernel entrypoint directly
+     */
+    if (prepare_startup() != 0) {
+        return -1;
+    }
+    /* as we do not check ownership but only mapping, we use idle task as vehicle */
+    mgr_task_add_resource(mgr_task_get_idle(), resource_id, resource);
+    return 0;
+}</code></pre>
+</div>
+</div>
+<p data-start="2028" data-end="2033">This entrypoint has  the following properties:</p>
+<ul data-start="2035" data-end="2264">
+<li data-start="2035" data-end="2096">
+<p data-start="2037" data-end="2096"><code data-start="2037" data-end="2050">resource_id</code> <em data-start="2051" data-end="2066">unconstrained</em> (volatile nondeterministic)</p>
+</li>
+<li data-start="2097" data-end="2163">
+<p data-start="2099" data-end="2163"><code data-start="2099" data-end="2109">resource</code> <em data-start="2110" data-end="2125">unconstrained</em> (volatile full <code data-start="2141" data-end="2160">layout_resource_t</code>)</p>
+</li>
+<li data-start="2164" data-end="2264">
+<p data-start="2166" data-end="2264">no precondition on the shape of the descriptor or its fields</p>
+</li>
+</ul>
+<p data-start="2266" data-end="2376"><strong data-start="2266" data-end="2279">Important</strong>: the test does <em data-start="2295" data-end="2300">not</em> assume anything about <code data-start="2323" data-end="2333">resource</code> — it may hold any bit pattern. That means:</p>
+<ul data-start="2378" data-end="2764">
+<li data-start="2378" data-end="2518">
+<p data-start="2380" data-end="2518">Frama-C’s WP plugin generates obligations for <em data-start="2426" data-end="2440">all possible</em> values of the <code data-start="2455" data-end="2474">layout_resource_t</code> inputs passed to <code data-start="2492" data-end="2515">mgr_task_add_resource</code>.</p>
+</li>
+<li data-start="2519" data-end="2673">
+<p data-start="2521" data-end="2673">As part of the manager implementation, <code data-start="2560" data-end="2583">mgr_task_add_resource</code> will <strong data-start="2589" data-end="2614">forge an MPU resource</strong> using the kernel’s internal data and architecture model.</p>
+</li>
+<li data-start="2674" data-end="2764">
+<p data-start="2676" data-end="2764">The forging logic includes those important W^X assertions inside <code data-start="2741" data-end="2761">mpu_forge_resource</code>.</p>
+</li>
+</ul>
+<p data-start="2766" data-end="2939">Because those assertions are in the <em data-start="2802" data-end="2830">resource construction code</em>, the only way for the overall proof to succeed for <em data-start="2882" data-end="2932">every nondeterministic input resource descriptor</em> is if:</p>
+<ol data-start="2941" data-end="3278">
+<li data-start="2941" data-end="3110">
+<p data-start="2944" data-end="3110"><strong data-start="2944" data-end="3019">invalid region configurations are either rejected or proven unreachable</strong> — i.e., they violate <code data-start="3041" data-end="3062">mpu_region_is_valid</code> or internal access-permission invariants; and</p>
+</li>
+<li data-start="3111" data-end="3278">
+<p data-start="3114" data-end="3278"><strong data-start="3114" data-end="3277">only valid MPU regions that satisfy alignment, size, and access permission constraints (including W^X) can ever flow into the low-level MPU configuration logic</strong>.</p>
+</li>
+</ol>
+<p data-start="3280" data-end="3556">Frama-C tries to discharge all obligations (e.g., prove no runtime errors, prove postconditions, prove assertions). If any possible value could produce a region that violates W^X (e.g., writable and executable), the corresponding WP proof obligation <em data-start="3530" data-end="3555">would not be discharged</em>.</p>
+<p data-start="3558" data-end="3563">Thus:</p>
+<p data-start="3565" data-end="3921">✔ The test <em data-start="3576" data-end="3610">covers all possible bit patterns</em> for <code data-start="3615" data-end="3625">resource</code><br data-start="3625" data-end="3628">✔ The proof infrastructure uses <code data-start="3660" data-end="3681">mpu_region_is_valid</code> to <em data-start="3685" data-end="3727">reject invalid base/limit configurations</em> via its ACSL predicate in <code data-start="3754" data-end="3769">mpu_pmsa_v8.h</code></p>
+<p data-start="3923" data-end="3980">When launched, the <strong data-start="3930" data-end="3959">Frama-C test demonstrates</strong> the W^X property by:</p>
+<ul data-start="3982" data-end="4272">
+<li data-start="3982" data-end="4122">
+<p data-start="3984" data-end="4122">constraining the set of acceptable region configurations to only those where <strong data-start="4061" data-end="4115">write and execute are not simultaneously permitted</strong>; and</p>
+</li>
+<li data-start="4123" data-end="4272">
+<p data-start="4125" data-end="4272">ensuring that any path through <code data-start="4156" data-end="4179">mgr_task_add_resource</code> that could lead to invalid combinations <em data-start="4220" data-end="4271">cannot happen under the ACSL and proof conditions</em>.</p>
+</li>
+</ul>
+<p>Test results show that Frama-C is able to demonstrate that all assertions and obligations are valid, whatever the input is, and as such demonstrate the effective W^X property.</p>
+<h2 data-start="7318" data-end="7331">Conclusion</h2>
+<p data-start="7333" data-end="7540">Sentry demonstrates that formal verification is not an abstract academic ideal, but a <strong data-start="7419" data-end="7449">practical engineering tool</strong> for building secure micro-kernels. Nowhere is this more concrete than in its MPU subsystem:</p>
+<ul data-start="7542" data-end="7716">
+<li data-start="7542" data-end="7607">
+<p data-start="7544" data-end="7607">Memory isolation is backed by mathematically proven invariants.</p>
+</li>
+<li data-start="7608" data-end="7658">
+<p data-start="7610" data-end="7658">Subtle, low-level bugs are eliminated by design.</p>
+</li>
+<li data-start="7659" data-end="7716">
+<p data-start="7661" data-end="7716">Security properties are guaranteed rather than assumed.</p>
+</li>
+</ul>
+<p data-start="7718" data-end="7876">By integrating formal methods into both architecture and implementation, Sentry raises the bar for what it means to be “secure by design” in embedded systems.</p>
+            ]]>
+        </content>
+    </entry>
     <entry>
         <title>Exploring Pointer-Free Data Exchange in Sentry</title>
         <author>
