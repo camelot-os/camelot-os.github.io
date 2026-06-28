@@ -3,12 +3,72 @@
     <title>Camelot Operating System</title>
     <link href="https://camelot-os.h2lab.org/feed.xml" rel="self" />
     <link href="https://camelot-os.h2lab.org" />
-    <updated>2026-01-30T19:13:57+01:00</updated>
+    <updated>2026-06-28T11:23:48+02:00</updated>
     <author>
         <name>H2Lab Development Team</name>
     </author>
     <id>https://camelot-os.h2lab.org</id>
 
+    <entry>
+        <title> Merlin : un framework de drivers userspace embarqués sécurisé</title>
+        <author>
+            <name>H2Lab Development Team</name>
+        </author>
+        <link href="https://camelot-os.h2lab.org/merlin-un-framework-de-drivers-userspace-embarques-securise/"/>
+        <id>https://camelot-os.h2lab.org/merlin-un-framework-de-drivers-userspace-embarques-securise/</id>
+
+        <updated>2026-06-28T11:23:48+02:00</updated>
+            <summary type="html">
+                <![CDATA[
+                    Dans un projet embarqué, écrire un driver n’est rarement qu’un problème de registres. Il faut aussi raccorder correctement le matériel décrit dans le DeviceTree, gérer le cycle de vie du périphérique, éviter les séquences d’initialisation fragiles, partager les bus proprement entre couches logicielles, et conserver&hellip;
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                <p>Dans un projet embarqué, écrire un driver n’est rarement qu’un problème de registres. Il faut aussi raccorder correctement le matériel décrit dans le DeviceTree, gérer le cycle de vie du périphérique, éviter les séquences d’initialisation fragiles, partager les bus proprement entre couches logicielles, et conserver une API stable quand le SoC ou l’IP changent.</p><p>C’est précisément le rôle de <strong>Merlin</strong>, le framework de drivers de Camelot-OS. Son idée directrice est simple : <strong>laisser au driver le code spécifique au matériel, et confier au framework tout ce qui relève de l’intégration plateforme</strong>. En pratique, cela donne une base plus légère à maintenir, plus prévisible à l’exécution, et nettement plus sûre à faire évoluer.</p><h2 id="le-bon-niveau-dabstraction-pour-des-drivers-embarqués">Le bon niveau d’abstraction pour des drivers embarqués</h2>
+<p>Merlin ne cherche pas à masquer le matériel derrière une couche opaque. Au contraire, le framework conserve les parties critiques (programmation des registres, gestion des timeouts, séquencement des contrôleurs, états de protocole) dans le driver lui-même.</p><p>Ce qu’il factorise, c’est tout le reste :</p><ul>
+<li>la résolution des métadonnées issues du DeviceTree ;</li>
+<li>l’enregistrement des drivers à partir d’un label runtime ;</li>
+<li>le mapping mémoire et la configuration GPIO/pinctrl ;</li>
+<li>le routage des IRQ vers la bonne instance de driver ;</li>
+<li>une surface d’API unifiée par famille de bus.</li>
+</ul>
+<p>Le résultat est particulièrement intéressant pour les équipes embarquées qui veulent éviter l’effet « BSP monolithique » : le code haut niveau reste portable, tandis que le code bas niveau garde la maîtrise fine du silicium.
+Le driver devient portable entre les SoCs, la résolution des périphériques dont la tâche
+est propriétaire se fait au travers d’un simple label, porté dans le dts du projet.</p><h2 id="une-intégration-plus-rapide-sans-sacrifier-le-contrôle">Une intégration plus rapide, sans sacrifier le contrôle</h2>
+<p>Le modèle d’usage de Merlin est volontairement strict et répétable : <strong>probe</strong>, <strong>init</strong>, opérations runtime, puis <strong>release</strong>. Ce cycle est identique pour I2C, SPI, USART, CAN ou encore USB.</p><pre><code class="language-c">drv_status_t my_probe(uint32_t label);
+drv_status_t my_init(...);
+drv_status_t my_release(uint32_t label);
+</code></pre>
+<p>Ce pattern unique apporte un gain immédiat en productivité. Quand on ajoute un nouveau driver, on ne réinvente pas la plomberie d’initialisation, de mapping, de pinmux ou de désenregistrement. Le développeur implémente surtout la logique du contrôleur : choix des timings, enchaînement des transactions, gestion des flags matériels, vidage de FIFO, etc.</p><p>Autrement dit, Merlin réduit le coût d’intégration sans transformer le driver en boîte noire.</p><h2 id="là-où-merlin-gagne-vraiment-en-efficacité">Là où Merlin gagne vraiment en efficacité</h2>
+<p>Pour un développeur embarqué, l’efficacité n’est pas qu’une question de vitesse CPU. C’est aussi le temps gagné sur la maintenance, le bring-up et le débogage. Sur ce point, Merlin cumule plusieurs avantages concrets.</p><h3 id="1-une-api-stable-par-famille-de-bus">1. Une API stable par famille de bus</h3>
+<p>L’application s’appuie sur des symboles unifiés comme <code>i2c_probe()</code>, <code>spi_xfer()</code>, <code>usart_write()</code> ou <code>can_send()</code>. Les implémentations concrètes peuvent rester spécifiques au fondeur, puis être exportées via alias.</p><p>Ce détail compte : il découple le code applicatif des noms internes d’un driver STM32, d’un futur backend RISC-V, ou d’une autre variante SoC. On change l’implémentation, pas le contrat logiciel.</p><h3 id="2-un-devicetree-exploité-comme-source-de-vérité">2. Un DeviceTree exploité comme source de vérité</h3>
+<p>Merlin consomme le DTS au build, génère les métadonnées nécessaires, puis remplit les structures runtime lors du <code>register()</code>. Le driver ne reçoit pas d’adresse de base codée en dur ni de table d’IRQ passée à la main : il reçoit un <strong>label</strong>, et le framework résout le reste.</p><p>Cette approche évite une grande partie des erreurs classiques de duplication entre code C, configuration board et intégration applicative.</p><h3 id="3-une-construction-modulaire-avec-meson-et-kconfig">3. Une construction modulaire avec Meson et Kconfig</h3>
+<p>Le projet assemble <code>libmerlin.a</code> via Meson, avec sélection conditionnelle des sources selon les symboles Kconfig. Les headers privés issus du DeviceTree sont générés automatiquement. Pour une base multi-cartes ou multi-configurations, c’est un vrai levier : le binaire n’embarque que ce qui correspond à la configuration active.</p><h3 id="4-des-helpers-des-et-de-polling-homogènes">4. Des helpers d’E/S et de polling homogènes</h3>
+<p>Les accès registres passent par <code>merlin_ioread*()</code> et <code>merlin_iowrite*()</code>. Les transitions matérielles sont protégées par des polls bornés comme <code>merlin_iopoll32_until_set()</code> ou <code>merlin_iopoll32_until_clear()</code>.</p><p>Ce point est essentiel : on garde un code proche du matériel, mais avec une discipline commune sur les accès MMIO et les attentes actives. Cela améliore la lisibilité et, surtout, la prévisibilité du comportement en phase de bring-up et d’erreur.</p><h2 id="la-sécurité-au-sens-embarqué-du-terme">La sécurité, au sens embarqué du terme</h2>
+<p>Quand on parle de sécurité dans un framework de drivers, il ne s’agit pas seulement de cybersécurité au sens réseau. Il s’agit aussi d’<strong>isolement</strong>, de <strong>réduction de la surface d’erreur</strong>, et de <strong>comportements déterministes face aux mauvais états</strong>.</p><p>Merlin apporte plusieurs mécanismes intéressants à ce niveau.</p><h3 id="lisolation-par-ownership">L’isolation par ownership</h3>
+<p>Le lien entre une tâche et ses périphériques n’est pas implicite. Il est porté par le DeviceTree via <code>sentry,owner</code>, en cohérence avec <code>CONFIG_TASK_LABEL</code>. Au build, Merlin filtre les périphériques pour ne générer que les métadonnées des devices appartenant à la tâche considérée.</p><p>Pour un OS comme Camelot-OS, c’est une propriété forte : <strong>le driver userspace n’a pas à connaître ni parcourir l’ensemble de la plateforme</strong>. Il n’opère que sur ce qui lui est explicitement attribué.</p><h3 id="un-modèle-fail-fast">Un modèle fail-fast</h3>
+<p>Les opérations runtime doivent échouer explicitement si <code>probe</code> ou <code>init</code> n’ont pas été exécutés correctement. Les erreurs sont normalisées via <code>drv_status_t</code> : état invalide, mauvais paramètre, timeout, configuration non supportée, ressource non enregistrée, etc.</p><p>Ce choix paraît simple, mais il évite deux classes de bugs fréquentes en embarqué : les séquences d’appel tolérées par accident, et les erreurs silencieuses qui n’apparaissent qu’en intégration système.</p><h3 id="un-routage-irq-centralisé">Un routage IRQ centralisé</h3>
+<p>Merlin centralise la correspondance entre numéro d’IRQ et instance de driver via <code>merlin_platform_driver_irq_displatch()</code>. L’application peut donc garder une boucle d’événements simple, sans répliquer partout la logique de routage.</p><p>Moins de duplication sur ce chemin critique signifie moins de code fragile, moins de tables parallèles à maintenir, et moins de divergences entre drivers.</p><h3 id="pas-dadresses-brutes-passées-à-la-volée">Pas d’adresses brutes passées à la volée</h3>
+<p>Le fait que l’API prenne des labels et des structures typées, plutôt que des adresses physiques ou des descripteurs bricolés à l’exécution, réduit nettement le risque d’erreurs de câblage logiciel. Le binding entre code et matériel reste explicite, mais il est sécurisé par les métadonnées générées à partir du DTS.</p><h2 id="un-exemple-très-concret--pourquoi-ce-modèle-aide-au-quotidien">Un exemple très concret : pourquoi ce modèle aide au quotidien</h2>
+<p>Prenons un driver I2C. Avec Merlin, l’instance est enregistrée via un label, les informations de base (<code>reg</code>, IRQ, pinctrl, horloge) viennent du DeviceTree, puis le driver se concentre sur son vrai sujet : mode d’adressage, gestion de <code>TXIS/RXNE/TC/STOPF</code>, traitement de <code>NACK/BERR/ARLO/OVR</code>, timeouts et reprise sur conditions transitoires.</p><p>Même logique côté SPI, USART ou CAN :</p><ul>
+<li>le framework gère l’attache à la plateforme ;</li>
+<li>le driver gère la logique du contrôleur ;</li>
+<li>l’application consomme une API cohérente.</li>
+</ul>
+<p>Pour une équipe qui maintient plusieurs drivers ou plusieurs variantes de cartes, ce découpage change vraiment l’économie du projet.</p><h2 id="un-point-intéressant--louverture-vers-rust">Un point intéressant : l’ouverture vers Rust</h2>
+<p>Merlin commence à intégrer le support Rust natif. Il pérvoit de fournir une crate dédiée.
+Merlin peut aussi piloter la construction du crate Rust <code>camelot-merlin</code> via Meson pour une cible embarquée <code>thumbv8m.main-none-eabi</code>, en injectant les entrées DTS dans le build Rust. On ne parle pas d’une application C avec une bibliothèque Rust, mais d’une application Rust complète, grace à la crate uapi de sentry et shield, qui implémente des crates entièrement native, permettant d’implémenter des applications entièrement Rust, sans jamais, à aucun moment, l’utilisation d’extern C. Ce modèle a déjà été intégré et validé dans l’écosystème Camelot-OS, où des tâches Rust et des tâches C sont aptes à cohabiter sur un même environnement.</p><p>Ce n’est pas un détail anecdotique. Cela montre que l’architecture de Merlin n’est pas enfermée dans une chaîne legacy : elle peut servir de base à une évolution progressive vers des composants Rust, tout en conservant le même socle de description matérielle et d’intégration build.</p><h2 id="pourquoi-merlin-mérite-lattention-des-développeurs-embarqués">Pourquoi Merlin mérite l’attention des développeurs embarqués</h2>
+<p>Merlin ne vend pas une abstraction magique. Il propose quelque chose de plus utile dans un contexte industriel : <strong>un contrat strict entre l’application, les drivers userspace et les services plateforme de l’OS</strong>.</p><p>Ce contrat apporte trois bénéfices concrets :</p><ol>
+<li><strong>Plus d’efficacité</strong> : moins de boilerplate, moins de duplication, une intégration reproductible par famille de bus.</li>
+<li><strong>Plus de robustesse</strong> : états explicites, erreurs typées, polling borné, initialisation disciplinée.</li>
+<li><strong>Plus de sûreté d’intégration</strong> : ownership des devices, binding DTS strict, routage IRQ centralisé, API découplée des implémentations fondeur.</li>
+</ol>
+<p>Pour les développeurs embarqués qui veulent conserver la main sur le matériel sans replonger dans un BSP dispersé et fragile, Merlin propose un compromis particulièrement solide.</p><p>La documentation de Merlin est déjà disponible ici : <a href="https://camelot-merlin.readthedocs.io/en/latest/index.html"  class="extlink extlink-icon-1"  >https://camelot-merlin.readthedocs.io/en/latest/index.html</a>
+Le dépôt source de Merlin est présent ici :<a href="https://github.com/camelot-os/merlin/"  class="extlink extlink-icon-1"  >https://github.com/camelot-os/merlin/</a></p>
+            ]]>
+        </content>
+    </entry>
     <entry>
         <title>Why Formal Verification Matters in the Sentry Microkernel</title>
         <author>
